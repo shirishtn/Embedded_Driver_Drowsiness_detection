@@ -7,11 +7,11 @@ import importlib
 
 # Prefer a Picamera2 backend when available, otherwise fall back to OpenCV camera_interface
 
-    cam = importlib.import_module("rpi_project.camera_picamera2")
-    print("[INFO] Using Picamera2 camera backend")
+cam = importlib.import_module("rpi_project.camera_picamera2")
+print("[INFO] Using Picamera2 camera backend")
 import quality_gate as qg
-    import camera_interface as cam
-    print("[INFO] Using OpenCV camera backend")
+import camera_interface as cam
+print("[INFO] Using OpenCV camera backend")
 from driver_state_engine import DriverStateMonitor
 from HRV_scripts.face_detector import FaceDetector
 from HRV_scripts.hrv_calculator import HRVCalculator
