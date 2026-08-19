@@ -1,8 +1,7 @@
 RPi-optimized driver drowsiness pipeline
 
-This folder contains a light-weight variant of the project's runtime entry
-point and a simplified `landmark_engine` that avoids MediaPipe, targeting
-Raspberry Pi with 1GB RAM.
+This is a self-contained, light-weight runtime folder and a simplified
+`landmark_engine` that avoids MediaPipe, targeting Raspberry Pi with 1GB RAM.
 
 What changed:
 - `main_pipeline.py`: lower resolution (320x240), lower FPS (15), reduced HRV
@@ -14,25 +13,26 @@ What changed:
 
 How to run on the Pi:
 
-1. Create a virtualenv and install dependencies (prefer `opencv-python-headless`):
+1. Copy the complete `rpi_project` folder to the Pi. Do not copy only
+   `main_pipeline.py`; its sibling modules and `hrv_scripts` folder are needed.
+
+2. Create a virtualenv and install dependencies (prefer `opencv-python-headless`):
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
+cd rpi_project
 pip install -r requirements.txt
 ```
 
-2. From the project root run:
+3. From inside that folder run:
 
 ```bash
-python -m rpi_project.main_pipeline --source 0
+python3 main_pipeline.py --source 0
 ```
 
-Run this command from the project root. Direct execution is also supported:
-
-```bash
-python rpi_project/main_pipeline.py --source 0
-```
+The pipeline deliberately uses only same-folder imports, so it does not need
+the parent project directory or `PYTHONPATH` configuration.
 
 Pi camera usage (Picamera2)
 ---------------------------
@@ -43,7 +43,8 @@ run the helper install script (requires sudo):
 ```bash
 sudo ./rpi_project/install_pi.sh
 source ~/rpi_project_venv/bin/activate
-python rpi_project/main_pipeline.py --source 0
+cd rpi_project
+python3 main_pipeline.py --source 0
 ```
 
 If Picamera2 is not available, the code will fall back to the OpenCV camera

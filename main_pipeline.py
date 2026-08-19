@@ -1,38 +1,19 @@
 import argparse
-import os
-import sys
 import time
 
 import cv2
 
-# Allow both `python -m rpi_project.main_pipeline` and direct script execution.
-if __package__ in (None, ""):
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-try:
-    if __package__ in (None, ""):
-        from rpi_project import landmark_engine as le
-    else:
-        from . import landmark_engine as le
-except ImportError:
-    import landmark_engine as le
-
-try:
-    if __package__ in (None, ""):
-        from rpi_project import camera_picamera2 as cam
-    else:
-        from . import camera_picamera2 as cam
-    print("[INFO] Using Picamera2 camera backend")
-except ImportError:
-    import camera_interface as cam
-    print("[INFO] Using OpenCV camera backend")
-
+# All runtime modules live beside this file so this folder can be copied to
+# the Pi and started directly with `python3 main_pipeline.py --source 0`.
+import camera_picamera2 as cam
+import landmark_engine as le
 import quality_gate as qg
+import perclos_engine as pe
 from driver_state_engine import DriverStateMonitor
-from HRV_scripts.face_detector import FaceDetector
-from HRV_scripts.hrv_calculator import HRVCalculator
-from HRV_scripts.roi_extractor import ROIExtractor
-from HRV_scripts.signal_processor import SignalProcessor
+from hrv_scripts.face_detector import FaceDetector
+from hrv_scripts.hrv_calculator import HRVCalculator
+from hrv_scripts.roi_extractor import ROIExtractor
+from hrv_scripts.signal_processor import SignalProcessor
 
 
 def parse_args():
@@ -121,7 +102,6 @@ def main():
 
             avg_ear = 0.0
             if len(landmarks_packet["points"]) >= 160:
-                import perclos_engine as pe
                 avg_ear = pe.calculate_ear_metrics(landmarks_packet)
 
             hrv_metrics = None
