@@ -19,7 +19,11 @@ from hrv_scripts.signal_processor import SignalProcessor
 def parse_args():
     parser = argparse.ArgumentParser(description="Run fused PERCLOS + HRV driver-state monitoring (RPi-optimized)")
     parser.add_argument("--source", default="0", help="Camera index or video file path")
-    parser.add_argument("--show-video", action="store_true", default=False, help="Display the video stream")
+    parser.add_argument(
+        "--display",
+        action="store_true",
+        help="Enable the OpenCV display window (development/debugging only)",
+    )
     return parser.parse_args()
 
 
@@ -87,7 +91,7 @@ def main():
             frame = frame_packet["data"]
 
             q_metrics = qg.process_quality_checks(gate_state, frame_packet)
-            if args.show_video:
+            if args.display:
                 cv2.imshow("Driver State Monitor", frame)
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
@@ -134,7 +138,8 @@ def main():
         print("[TEARDOWN] Interrupted by user")
     finally:
         cam.stop_camera(camera_state)
-        cv2.destroyAllWindows()
+        if args.display:
+            cv2.destroyAllWindows()
         print(f"[SUCCESS] Pipeline stopped after {frame_process_count} frames")
 
 

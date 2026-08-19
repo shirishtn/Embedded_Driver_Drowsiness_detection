@@ -34,6 +34,14 @@ python3 main_pipeline.py --source 0
 The pipeline deliberately uses only same-folder imports, so it does not need
 the parent project directory or `PYTHONPATH` configuration.
 
+The default is headless, suitable for deployment without a desktop session.
+For development with an OpenCV preview window, add `--display` and press `q`
+in that window to stop:
+
+```bash
+python3 main_pipeline.py --source 0 --display
+```
+
 Pi camera usage (Picamera2)
 ---------------------------
 If you have the official Raspberry Pi camera and `python3-picamera2` is installed,
