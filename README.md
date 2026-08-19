@@ -49,4 +49,8 @@ Notes and limitations:
   than MediaPipe-based runs.
 - For best performance on RPi, install optimized OpenCV from system packages
   or use a prebuilt wheel compatible with your Pi's architecture.
+
+
 "# Embedded_Driver_Drowsiness_detection" 
+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 github auth token
+source venv/bin/activate

@@ -10,7 +10,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 apt update
-apt install -y python3 python3-venv python3-pip libatlas-base-dev libjpeg-dev libopenjp2-7-dev libtiff5-dev libatlas3-base
+apt install -y python3 python3-venv python3-pip libopenblas-dev libopenblas0-pthread libjpeg-dev libopenjp2-7-dev libtiff-dev
 
 # Picamera2 and libcamera (Bookworm or newer). On some OS versions picamera2
 # is available via apt. If not, install via pip after enabling backports.
