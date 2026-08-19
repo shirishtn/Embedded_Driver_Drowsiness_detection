@@ -32,7 +32,12 @@ def create_camera_state(video_source=0, width=320, height=240, target_fps=15):
 def initialize_camera(camera_state):
     picam = Picamera2()
     # Use a small preview configuration to reduce CPU work
-    config = picam.create_preview_configuration({"main": {"size": (camera_state["width"], camera_state["height"])}})
+    # Picamera2 expects stream settings as keyword arguments. Passing a
+    # {"main": ...} dictionary positionally makes it treat "main" as an
+    # invalid stream-setting key on current Raspberry Pi OS releases.
+    config = picam.create_preview_configuration(
+        main={"size": (camera_state["width"], camera_state["height"]), "format": "BGR888"}
+    )
     picam.configure(config)
     picam.start()
     camera_state["picam"] = picam

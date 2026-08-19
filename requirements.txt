@@ -1,5 +1,8 @@
 numpy>=1.24
-opencv-python-headless>=4.7
+# Pin to the stable OpenCV 4 bindings. Do not use the currently published
+# 5.0.0.93 wheel on Raspberry Pi: it can import without core APIs such as
+# cv2.CascadeClassifier.
+opencv-python-headless==4.12.0.88
 scipy>=1.10
 
 # On Raspberry Pi, prefer system packages when possible (apt) and
