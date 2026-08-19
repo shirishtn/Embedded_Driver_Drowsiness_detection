@@ -90,18 +90,54 @@ def main():
             frame_id = frame_packet["frame_id"]
             frame = frame_packet["data"]
 
+#            q_metrics = qg.process_quality_checks(gate_state, frame_packet)
+#            if args.display:
+#                cv2.imshow("Driver State Monitor", frame)
+#                if cv2.waitKey(1) & 0xFF == ord("q"):
+#                    break
+
+#            if q_metrics["overall_pass"] == 0:
+#                continue
+
+#            # Use lightweight landmark engine
+#            landmarks_packet = le.process_face_landmarks(tracker_state, frame_packet)
+#            if landmarks_packet["detection_valid"] == 0:
+#                continue 
+
             q_metrics = qg.process_quality_checks(gate_state, frame_packet)
+
+            if frame_process_count % 15 == 0:
+                print(
+                    f"[DEBUG] frame={frame_id} "
+                    f"quality={q_metrics}"
+                )
+
             if args.display:
                 cv2.imshow("Driver State Monitor", frame)
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
 
             if q_metrics["overall_pass"] == 0:
+                if frame_process_count % 15 == 0:
+                    print("[DEBUG] Frame rejected by quality gate")
                 continue
 
-            # Use lightweight landmark engine
-            landmarks_packet = le.process_face_landmarks(tracker_state, frame_packet)
+
+            landmarks_packet = le.process_face_landmarks(
+                tracker_state,
+                frame_packet
+            )
+
+            if frame_process_count % 15 == 0:
+                print(
+                    f"[DEBUG] Face detection: "
+                    f"valid={landmarks_packet['detection_valid']} "
+                    f"points={len(landmarks_packet['points'])}"
+                )
+
             if landmarks_packet["detection_valid"] == 0:
+                if frame_process_count % 15 == 0:
+                    print("[DEBUG] Frame rejected: no valid face landmarks")
                 continue
 
             avg_ear = 0.0
