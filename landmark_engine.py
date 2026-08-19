@@ -13,9 +13,35 @@ import cv2
 import numpy as np
 import os
 
-# Haar cascade filenames from OpenCV distribution
-_HAAR_FACE = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-_HAAR_EYE = cv2.data.haarcascades + "haarcascade_eye.xml"
+
+def _find_haar_cascade(filename):
+    """Locate an OpenCV Haar cascade on both pip and apt-installed OpenCV."""
+    directories = []
+    cv2_data = getattr(cv2, "data", None)
+    if cv2_data is not None:
+        directories.append(getattr(cv2_data, "haarcascades", ""))
+
+    # Raspberry Pi OS's apt package commonly installs cascades in one of these.
+    directories.extend((
+        "/usr/share/opencv4/haarcascades",
+        "/usr/share/opencv/haarcascades",
+        "/usr/local/share/opencv4/haarcascades",
+    ))
+
+    for directory in directories:
+        path = os.path.join(directory, filename)
+        if directory and os.path.isfile(path):
+            return path
+
+    raise RuntimeError(
+        f"Cannot find {filename}. Install OpenCV Haar cascade data, for example: "
+        "sudo apt install opencv-data"
+    )
+
+
+# Supports both pip OpenCV (`cv2.data`) and Raspberry Pi OS's apt OpenCV.
+_HAAR_FACE = _find_haar_cascade("haarcascade_frontalface_default.xml")
+_HAAR_EYE = _find_haar_cascade("haarcascade_eye.xml")
 
 # Indices we will populate (MediaPipe-like indices used elsewhere)
 _KEY_INDICES = {
