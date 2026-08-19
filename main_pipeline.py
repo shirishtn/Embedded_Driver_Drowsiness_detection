@@ -1,25 +1,38 @@
 import argparse
 import os
+import sys
 import time
 
 import cv2
-import importlib
 
-# Prefer a Picamera2 backend when available, otherwise fall back to OpenCV camera_interface
+# Allow both `python -m rpi_project.main_pipeline` and direct script execution.
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-cam = importlib.import_module("rpi_project.camera_picamera2")
-print("[INFO] Using Picamera2 camera backend")
+try:
+    if __package__ in (None, ""):
+        from rpi_project import landmark_engine as le
+    else:
+        from . import landmark_engine as le
+except ImportError:
+    import landmark_engine as le
+
+try:
+    if __package__ in (None, ""):
+        from rpi_project import camera_picamera2 as cam
+    else:
+        from . import camera_picamera2 as cam
+    print("[INFO] Using Picamera2 camera backend")
+except ImportError:
+    import camera_interface as cam
+    print("[INFO] Using OpenCV camera backend")
+
 import quality_gate as qg
-import camera_interface as cam
-print("[INFO] Using OpenCV camera backend")
 from driver_state_engine import DriverStateMonitor
 from HRV_scripts.face_detector import FaceDetector
 from HRV_scripts.hrv_calculator import HRVCalculator
 from HRV_scripts.roi_extractor import ROIExtractor
 from HRV_scripts.signal_processor import SignalProcessor
-
-# Use the lightweight landmark engine in this folder
-from . import landmark_engine as le
 
 
 def parse_args():

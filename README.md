@@ -25,7 +25,14 @@ pip install -r requirements.txt
 2. From the project root run:
 
 ```bash
+python -m rpi_project.main_pipeline --source 0
+```
+
+Run this command from the project root. Direct execution is also supported:
+
+```bash
 python rpi_project/main_pipeline.py --source 0
+```
 
 Pi camera usage (Picamera2)
 ---------------------------
@@ -41,7 +48,6 @@ python rpi_project/main_pipeline.py --source 0
 
 If Picamera2 is not available, the code will fall back to the OpenCV camera
 backend.
-```
 
 Notes and limitations:
 - This lightweight engine trades landmark precision for CPU/memory efficiency.
@@ -49,8 +55,3 @@ Notes and limitations:
   than MediaPipe-based runs.
 - For best performance on RPi, install optimized OpenCV from system packages
   or use a prebuilt wheel compatible with your Pi's architecture.
-
-
-"# Embedded_Driver_Drowsiness_detection" 
-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 github auth token
-source venv/bin/activate
